@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const [user, setUser] = useState({
     email: "",
@@ -100,4 +100,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
