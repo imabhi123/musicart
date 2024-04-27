@@ -1,12 +1,40 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HoveredLink, Menu, MenuItem, ProductItem } from "./ui/navbar-menu";
 import { cn } from "@/utils/cn";
 import Link from "next/link";
+import axios from "axios";
+import {toast} from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 function Navbar({ className }: { className?: string }) {
+  const router = useRouter()
   const [active, setActive] = useState<string | null>(null);
+  const [data, setData] = useState<string | null>(null);
+
+  const getUserDetails = async () => {
+    const res = await axios.post("/api/users/me");
+    console.log(res.data, "abhishek");
+    setData(res.data.data._id);
+  };
+
+  const logout = async () => {
+    try {
+        await axios.get('/api/users/logout')
+        toast.success('Logout successful')
+        router.push('/login');
+    } catch (error:any) {
+        console.log(error.message);
+        toast.error(error.message);
+    }
+}
+
+
+  useEffect(() => {
+    getUserDetails();
+  }, []);
+
   return (
     <div
       className={cn(
@@ -38,20 +66,34 @@ function Navbar({ className }: { className?: string }) {
             item="Contact Us"
           ></MenuItem>
         </Link>
-        <Link href={"/login"}>
-          <MenuItem
-            setActive={setActive}
-            active={active}
-            item="Login"
-          ></MenuItem>
-        </Link>
-        <Link href={"/signup"}>
-          <MenuItem
-            setActive={setActive}
-            active={active}
-            item="Signup"
-          ></MenuItem>
-        </Link>
+        {!data ? (
+          <>
+            <Link href={"/login"}>
+              <MenuItem
+                setActive={setActive}
+                active={active}
+                item="Login"
+              ></MenuItem>
+            </Link>
+            <Link href={"/signup"}>
+              <MenuItem
+                setActive={setActive}
+                active={active}
+                item="Signup"
+              ></MenuItem>
+            </Link>
+          </>
+        ) : (
+          <>
+            <button onClick={logout}>
+              <MenuItem
+                setActive={setActive}
+                active={active}
+                item="Logout"
+              ></MenuItem>
+            </button>
+          </>
+        )}
       </Menu>
     </div>
   );
