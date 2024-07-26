@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         response.cookies.set("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', // Set to true if using HTTPS
-            sameSite: 'Lax'
+            sameSite: 'lax' // Changed to lowercase 'lax'
         });
 
         response.headers = headers;
